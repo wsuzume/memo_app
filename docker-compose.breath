@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  api_server:
+    build: api_server
+    volumes:
+      - ./api_server/go/src/memo_app:/go/src/memo_app
+
