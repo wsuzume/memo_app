@@ -8,7 +8,40 @@
 </head>
 <body>
   <script>
-    var app = Elm.Main.init();
+    // unique key-prefix for private local storage, named after "Alice"
+    // this key must be different for each application
+    var privateKey = "adelaide_x001";
+    // unique key-prefix for shared local storage, named after "Bob"
+    // this key must be the same among all applications
+    var sharedKey = "hrodberht";
+
+    function makeFlags(context, privateKey, sharedKey) {
+      return {
+        user: context,
+        config: {
+          privateKeyPrefix: privateKey,
+          sharedKeyPrefix: sharedKey
+        }
+      };
+    }
+
+    var context = JSON.parse(localStorage.getItem(privateKey));
+    var flags = makeFlags(context, privateKey, sharedKey);
+
+    var app = Elm.Main.init({flags: flags});
+    app.ports.portSetLocalContext.subscribe(
+      (val) => {
+        if (val === null) {
+          localStorage.removeItem(privateKey);
+        } else {
+          localStorage.setItem(privateKey, val);
+        }
+      });
+    app.ports.portGetLocalContext.subscribe(
+      (key) => {
+        const val = localStorage.getItem(privateKey);
+        app.ports.portRecvLocalContext.send(val);
+      });
   </script>
 </body>
 </html>

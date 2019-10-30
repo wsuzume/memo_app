@@ -10,6 +10,7 @@ type Page
   = Other
   | Home
   | Login
+  | LocalStorage
   | Logout
   | Register
   | Article
@@ -22,9 +23,8 @@ type Page
 
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Browser.Document msg
 view maybeViewer page { title, content } =
-  { title = title
-  , body = [ content ] }
---    { title = title ++ " - SampleApp"
+  { title = title ++ " - SampleApp"
+  , body = viewHeader page maybeViewer :: [ content ] }
 --    , body = viewHeader page maybeViewer :: content :: [ viewFooter ]
 --    }
 
@@ -32,11 +32,12 @@ viewLink : String -> String -> Html msg
 viewLink str path =
   li [] [ a [ href path ] [ text str ] ]
 
-viewHeader : Viewer -> Html msg
-viewHeader model =
+viewHeader : Page -> Maybe Viewer -> Html msg
+viewHeader page viewer =
   div [ class "page-header" ]
       [ ul []
           [ viewLink "Home" "/home"
           , viewLink "Login" "/login"
+          , viewLink "LocalStorage" "/LocalStorage"
           ]
       ]

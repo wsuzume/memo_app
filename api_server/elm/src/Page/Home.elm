@@ -8,18 +8,20 @@ import Page exposing (..)
 import Session exposing (..)
 
 type alias Model =
-  { key : String
-  , username : String
+  { username : String
   , session : Session
   }
 
 type Msg =
   TestMsg
 
+toSession : Model -> Session
+toSession model =
+    model.session
+
 init : Session -> ( Model, Cmd Msg )
 init session =
-    ( { key = "hoge"
-      , username = "fuga"
+    ( { username = "fuga"
       , session = session
       }
     , Cmd.none
