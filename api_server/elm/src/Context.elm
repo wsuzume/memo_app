@@ -62,6 +62,7 @@ decoder =
 
 decodeString : String -> Maybe Context
 decodeString s =
+  --let _ = Debug.log "hoge" s in
   Decode.decodeString decoder s
    |> Result.toMaybe
 
@@ -73,13 +74,17 @@ decodeValue v =
 encoder : Context -> Value
 encoder ctx =
   Encode.object
-  [ ( "username", Username.encode ctx.username )
-  , ( "avatar", Avatar.encode ctx.avatar )
-  , ( "storedRoute", Encode.string ctx.storedRoute )
-  , ( "sessionID", SessionID.encode ctx.sessionID )
-  , ( "csrfToken", CSRFToken.encode ctx.csrfToken )
-  --, ( "privateKeyPrefix", Encode.string ctx.privateKeyPrefix )
-  --, ( "sharedKeyPrefix", Encode.string ctx.sharedKeyPrefix )
+  [ ( "user", Encode.object
+    [ ( "username", Username.encode ctx.username )
+    , ( "avatar", Avatar.encode ctx.avatar )
+    , ( "storedRoute", Encode.string ctx.storedRoute )
+    , ( "sessionID", SessionID.encode ctx.sessionID )
+    , ( "csrfToken", CSRFToken.encode ctx.csrfToken )
+    ] )
+  , ( "config", Encode.object
+    [ ( "privateKeyPrefix", Encode.string ctx.privateKeyPrefix )
+    , ( "sharedKeyPrefix", Encode.string ctx.sharedKeyPrefix )
+    ])
   ]
 
 save : Context -> Cmd msg

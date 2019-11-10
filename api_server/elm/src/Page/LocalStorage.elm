@@ -100,13 +100,13 @@ view model =
         div [ class "local-storage-page" ]
             [ h1 [] [ text "LocalStorage" ]
             , div [ class "context-viewer" ]
-                  [ p [] [ text "Username: " ]
-                  , p [] [ text "Avatar: " ]
-                  , p [] [ text "StoredRoute: " ]
-                  , p [] [ text "SessionID: " ]
-                  , p [] [ text "CSRFToken: " ]
-                  , p [] [ text "privateKeyPrefix: " ]
-                  , p [] [ text "sharedKeyPrefix: " ]
+                  [ p [] [ text "Username: ", text model.username ]
+                  , p [] [ text "Avatar: ", text model.avatar ]
+                  , p [] [ text "StoredRoute: ", text model.storedRoute ]
+                  , p [] [ text "SessionID: ", text model.sessionID ]
+                  , p [] [ text "CSRFToken: ", text model.csrfToken ]
+                  , p [] [ text "privateKeyPrefix: ", text model.privateKeyPrefix ]
+                  , p [] [ text "sharedKeyPrefix: ", text model.sharedKeyPrefix ]
                   ]
             , hr [] []
             , div [ class "input-form" ]
@@ -167,7 +167,15 @@ update msg model =
       ( model, Context.load )
 
     ( ReceiveData v, _ ) ->
-      ( { model | avatar = v }, Cmd.none )
+      let
+          maybeContext = Context.decodeString v
+          --_ = Debug.log "hoge" maybeContext
+      in
+      case maybeContext of
+        Just ctx ->
+          ( { model | avatar = Avatar.toString ctx.avatar }, Cmd.none )
+        Nothing ->
+          ( model, Cmd.none )
 
     ( _, _ ) ->
       -- Disregard messages that arrived for the wrong page.
